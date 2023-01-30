@@ -20,24 +20,37 @@ class _NavDrawerState extends State<NavDrawer> {
                 child: CircleAvatar(
                     backgroundImage: AssetImage("assets/odin.jpeg"))),
           ),
+          const Divider(
+            height: 2,
+          ),
           const ListTile(
             leading: Text("Home"),
           ),
           ListTile(
             onTap: () {
               showDialog(
+                  useSafeArea: true,
                   context: context,
                   builder: (BuildContext context) {
-                    return about();
+                    return AlertDialog(
+                      title: const Text("Xerox(Hackathon Project"),
+                      content: about(),
+                      actions: [
+                        Container(
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(16.0)),
+                          child: const Text("Ok"),
+                        )
+                      ],
+                    );
                   });
             },
             leading: const Text("About"),
           ),
-          const SizedBox(
-            height: 320,
-          ),
-          const Text("The Odin Project"),
-          const Text('0.0.1')
+          const Text("The Odin Project",
+              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
+          const Text('0.0.1',
+              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
         ],
       ),
     );

@@ -1,9 +1,22 @@
+import 'dart:io';
+
+import 'package:bitsdojo_window/bitsdojo_window.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:xerox/sidebar.dart';
 
 void main() {
   runApp(const MyApp());
+  doWhenWindowReady(() {
+    final win = appWindow;
+    const initialSize = Size(600, 450);
+    win.minSize = initialSize;
+    win.size = initialSize;
+    win.alignment = Alignment.center;
+    win.title = "Xerox";
+    win.show();
+  });
 }
 
 class MyApp extends StatelessWidget {
@@ -30,6 +43,17 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  PlatformFile? _commodityFile;
+  getFile() async {
+    FilePickerResult? file = await FilePicker.platform.pickFiles();
+
+    if (file != null) {
+      PlatformFile fileCommodity = file.files.single;
+    } else {
+      print("Fucked up");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,7 +61,7 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text('Xerox'),
         centerTitle: true,
       ),
-      drawer: NavDrawer(),
+      drawer: const NavDrawer(),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
