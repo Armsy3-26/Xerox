@@ -1,17 +1,15 @@
-import 'package:get/state_manager.dart';
+import 'package:get/get.dart';
 
 class FileController extends GetxController {
   bool? fileUploadStatus;
   String? fileName;
-  String? fileBytes;
-  String? fileSize;
+  int? fileSize;
   String? fileExtension;
   String? filePath;
 
-  fileDetails(status, filename, fileBytes, fileSize, fileExtension, filePath) {
+  fileDetails(status, filename, fileSize, fileExtension, filePath) {
     fileUploadStatus = status;
     fileName = fileName;
-    fileBytes = fileBytes;
     fileSize = fileSize;
     fileExtension = fileExtension;
     filePath = filePath;

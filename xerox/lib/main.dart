@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:get/get.dart';
 import 'package:xerox/file_controller.dart';
+import 'package:xerox/networking.dart';
 import 'package:xerox/sidebar.dart';
 
 void main() {
@@ -15,7 +16,7 @@ void main() {
     const initialSize = Size(600, 450);
     win.minSize = initialSize;
     win.size = initialSize;
-    win.alignment = Alignment.center;
+    //win.alignment = Alignment.spaceEvenly;
     win.title = "Xerox";
     win.show();
   });
@@ -47,7 +48,11 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //file controller dependency
 
-  FileController fileController = Get.put(FileController());
+  bool fileUploadStatus = false;
+  String? fileName;
+  int? fileSize;
+  String? fileExtension;
+  String? filePath;
 
   getFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -58,11 +63,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (result != null) {
       PlatformFile file = result.files.first;
+      fileUploadStatus = true;
+      fileName = file.name;
+      fileSize = file.size;
+      fileExtension = file.extension;
+      filePath = file.path;
 
-      fileController.fileDetails(
-          true, file.name, file.bytes, file.size, file.extension, file.path);
+      setState(() {});
     } else {
-      fileController.fileDetails(false, "", "", "", "", "");
+      fileUploadStatus = false;
+      setState(() {});
     }
   }
 
@@ -74,92 +84,192 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       drawer: const NavDrawer(),
-      body: GetBuilder<FileController>(builder: (context) {
-        return SizedBox(
-          child: fileController.fileUploadStatus == true
-              ? Center(
+      body: SizedBox(
+        child: fileUploadStatus == false
+            ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: <Widget>[
+                    Wrap(
+                      children: const [
+                        Text("Click",
+                            style: TextStyle(fontWeight: FontWeight.w500)),
+                        Icon(Icons.file_copy, color: Colors.blue),
+                        Text("to select file!",
+                            style: TextStyle(fontWeight: FontWeight.w500))
+                      ],
+                    ),
+                    /*Container(
+                      color: Colors.transparent.withAlpha(55),
+                      width: 200,
+                      child: FAProgressBar(
+                        currentValue: 50,
+                        displayText: "%",
+                      ),
+                    ) */
+                  ],
+                ),
+              )
+            : Center(
+                child: Container(
+                  width: 400,
+                  height: 300,
+                  decoration: BoxDecoration(
+                      color: Colors.transparent.withAlpha(55),
+                      borderRadius: BorderRadius.circular(16.0)),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Selected File."),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
+                      const SizedBox(
+                        height: 10,
                       ),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Text("File Name"),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Text(""),
-                        ],
-                      ),
-                    ],
-                  ),
-                )
-              : Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      const Text(
-                        'Checking for duplicates ....',
-                      ),
-                      Container(
-                        color: Colors.transparent.withAlpha(55),
-                        width: 200,
-                        child: FAProgressBar(
-                          currentValue: 50,
-                          displayText: "%",
+                      const Text("Selected File.",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                          )),
+                      SizedBox(
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Text(
+                                  "File Name:        ",
+                                  style: TextStyle(fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Text(fileName.toString()),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Text(
+                                  "File Size:            ",
+                                  style: TextStyle(fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Text(fileSize.toString()),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Text(
+                                  "File Extension:",
+                                  style: TextStyle(fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Text(fileExtension.toString()),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                const Text(
+                                  "File Path:          ",
+                                  style: TextStyle(fontWeight: FontWeight.w400),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Text(filePath.toString().length > 30
+                                    ? "${filePath.toString().substring(0, 30)}..."
+                                    : filePath.toString()),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Center(
+                              child: Container(
+                                  width: 50,
+                                  height: 50,
+                                  alignment: Alignment.center,
+                                  child: Image.asset('assets/sucess.gif')),
+                            ),
+                            Center(
+                              child: Container(
+                                alignment: Alignment.center,
+                                child: const Text('successfuly selected file.',
+                                    style: TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 12,
+                                    )),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 40,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                GestureDetector(
+                                  onTap: () {
+                                    fileUploadStatus = false;
+                                    setState(() {});
+                                  },
+                                  child: Container(
+                                      height: 40,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.redAccent,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: const Center(
+                                          child: Text("Cancel.",
+                                              style: TextStyle(fontSize: 12)))),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    //print("Checking for xerox");
+                                  },
+                                  child: Container(
+                                      height: 40,
+                                      width: 100,
+                                      decoration: BoxDecoration(
+                                          color: Colors.redAccent,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      child: const Center(
+                                          child: Text("Check for Xerox",
+                                              style: TextStyle(fontSize: 12)))),
+                                ),
+                              ],
+                            )
+                          ],
                         ),
-                      )
+                      ),
                     ],
                   ),
                 ),
-        );
-      }),
+              ),
+      ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
             getFile();

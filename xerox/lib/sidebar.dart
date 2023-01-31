@@ -54,10 +54,10 @@ class _NavDrawerState extends State<NavDrawer> {
                               Navigator.of(context).pop();
                             },
                             child: Container(
-                              width: 80,
+                              width: 100,
                               height: 40,
                               decoration: BoxDecoration(
-                                  color: Colors.blue,
+                                  color: Colors.red,
                                   borderRadius: BorderRadius.circular(16.0)),
                               child: const Center(child: Text("Ok")),
                             ),
@@ -69,7 +69,10 @@ class _NavDrawerState extends State<NavDrawer> {
               leading: const Text("About"),
             ),
             const Text("The Odin Project",
-                style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
+                style: TextStyle(
+                    decoration: TextDecoration.underline,
+                    fontStyle: FontStyle.italic,
+                    fontSize: 10)),
             const Text('0.0.1',
                 style: TextStyle(fontStyle: FontStyle.italic, fontSize: 10)),
           ],
@@ -87,8 +90,8 @@ about() {
     width: 40,
     height: 60,
     child: const Text(
-      "This is a basic program that facilitates checking of duplicates.\nA project for Kabarak Hackathon!",
-      style: TextStyle(fontSize: 12),
+      "This is  program that facilitates checking of duplicates.\nA project for Kabarak Hackathon!",
+      style: TextStyle(fontSize: 13),
     ),
   );
 }
