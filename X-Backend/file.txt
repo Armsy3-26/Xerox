@@ -1,1 +1,0 @@
-THis is a basic but serious file that can emulate an android.
