@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_animation_progress_bar/flutter_animation_progress_bar.dart';
 import 'package:get/get.dart';
-import 'package:xerox/file_controller.dart';
-import 'package:xerox/networking.dart';
+import 'package:xerox/network.dart';
 import 'package:xerox/sidebar.dart';
 
 void main() {
@@ -48,6 +46,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   //file controller dependency
 
+  //network dependency for sending a file
+
+  NetworkController networkController = Get.put(NetworkController());
+  PlatformFile? selectedFile;
   bool fileUploadStatus = false;
   String? fileName;
   int? fileSize;
@@ -69,7 +71,9 @@ class _MyHomePageState extends State<MyHomePage> {
       fileExtension = file.extension;
       filePath = file.path;
 
-      setState(() {});
+      setState(() {
+        selectedFile = file;
+      });
     } else {
       fileUploadStatus = false;
       setState(() {});
@@ -247,13 +251,13 @@ class _MyHomePageState extends State<MyHomePage> {
                                 ),
                                 GestureDetector(
                                   onTap: () {
-                                    //print("Checking for xerox");
+                                    networkController.sendFile(selectedFile!);
                                   },
                                   child: Container(
                                       height: 40,
                                       width: 100,
                                       decoration: BoxDecoration(
-                                          color: Colors.redAccent,
+                                          color: Colors.red,
                                           borderRadius:
                                               BorderRadius.circular(10.0)),
                                       child: const Center(
