@@ -40,9 +40,11 @@ class File(Resource):
             
             print("Do magic buddy")
             
+            return {"flag": 201, "feedback": "File received"}
+            
         else:
             
-            return "Uploaded file is not supported!"
+            return {"flag": 400, "feedback":"Uploaded file is not supported!"}
         
         
     
