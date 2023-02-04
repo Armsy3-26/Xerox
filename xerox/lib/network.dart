@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:get/get.dart';
-import 'package:get/state_manager.dart';
 import 'package:http/http.dart' as http;
 import 'package:xerox/analysis.dart';
 import 'package:xerox/error.dart';
@@ -35,7 +34,7 @@ class NetworkController extends GetxController {
 
     var responseString = jsonDecode(String.fromCharCodes(responseData));
 
-    if (responseString['flag'] == 400) {
+    if (responseString['flag'] == 400 || responseString['flag'] == 401) {
       //show error page
       fileStatusFlag = 400;
       widgetController.getWidget(const ErrorWidget());

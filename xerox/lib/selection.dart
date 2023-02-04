@@ -187,6 +187,7 @@ class _SelectionWidgetState extends State<SelectionWidget> {
                                   GestureDetector(
                                     onTap: () {
                                       fileController.fileUploadStatus = false;
+                                      clicked = false;
                                       setState(() {});
                                     },
                                     child: Container(
@@ -241,5 +242,3 @@ class _SelectionWidgetState extends State<SelectionWidget> {
     });
   }
 }
-
-class FilePicker {}
