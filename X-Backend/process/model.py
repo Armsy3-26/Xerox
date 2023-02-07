@@ -7,94 +7,57 @@ Created on Thu Feb  2 12:32:33 2023
 """
 
 import os
-import spacy
+import gensim
+from gensim import matutils
 
-nlp = spacy.load("en_core_web_lg")
+complete_input  = ""
+
+#will be fetched from the database
+corpus  = [
+    "0718358415 Armstrong nyagwencha onyango 19900223 male english",
+    "0741235462 Fakii mohammed 18862322 male kiswahili ",
+    "0721345412 Florence Ngina 20021223 female english",
+    "0734567676 David Kamau neems 19900223 male english",
+    "0712346578 Brian Breezy 19921203 male kiswahili"
+    ]
+
+#preprocess the information bith incoming input and corpus
+
+input_preprocess = gensim.utils.simple_preprocess(complete_input)
+
+corpus_preprocess = [gensim.utils.simple_preprocess(doc) for doc in corpus]
+
+#create a dictionary
+
+dictionary = gensim.corpora.Dictionary(corpus_preprocess)
+
+#create a bow model for both input and corpus
+
+input_bow  = dictionary.doc2bow(input_preprocess)
+
+corpus_bow  = [dictionary.doc2bow(doc) for doc in corpus_preprocess]
 
 
-#default current path
+#conver to tfidf , 1. we create the model that takes corpus_bow and the dictionary
 
-path  = os.path.expanduser('~')
+tfidf_model  =  gensim.models.TfidfModel(corpus_bow, dictionary=dictionary)
 
-#opens files for comparison
-#get all .txt
+#create tfidf for the sentence a list
 
-all_files  = os.listdir(path+'/Xerox/X-Backend/process/documents')
+input_tfidf  = tfidf_model[input_bow]
 
-#read the files one by one , tokenize, lemma it and make a complete statement
-paragraph = []
+#create tfidf for the corpus bow
 
-new_paragraph = []
-#get .txt extension files only
+corpus_tfidf  = tfidf_model[corpus_bow]
 
-text_files  = []
+#check for similarity.....a loop
 
-def fetch_present_files():
-    
-    for file in all_files:
-        
-        base,ext = os.path.splitext(file)
-        
-        if ext == '.txt':
-            text_files.append(file)
-            
-        else:
-            
-            pass
-    
-#incoming fxn
+similarity  = [matutils.cossim(input_tfidf, doc) for doc in corpus_tfidf]
 
-def process_incoming_file(filename):
-    
-    #for text_file in text_files:
-        
-    with open(path+'/Xerox/X-Backend/process/documents/'+filename) as f:
-        #wrap it inside a spacy object
-        paragraph_String  = nlp(f.read())
-        
-        #tokenize and remove stop words 
-        
-        tokenized_doc  = [token.lemma_ for token in paragraph_String if not token.is_stop]
-        
-        new_paragraph.append(' '.join(tokenized_doc))
-        
-        print("done")
-        
-        return {"flag": 201, "feedback": "Extraction complete \n scanning for duplications"}
-            
-            
-def process_present_files():
-    
-    for text_file in text_files:
-        
-        with open(path+'/Xerox/X-Backend/process/documents/'+text_file) as f:
-            #wrap it inside a spacy object
-            paragraph_String  = nlp(f.read())
-            
-            #tokenize and remove stop words 
-            
-            tokenized_doc  = [token.lemma_ for token in paragraph_String if not token.is_stop]
-            
-            paragraph.append(' '.join(tokenized_doc))
-            print("done")
-            
-            return {"flag": 201, "feedback": "Current docs scanned to completion"}
-        
-def get_similarity():
-            
-            #convert word to vectors 
-            #both should be objects exposed to same process
-            #get the similarity value
-            nlp_obj = nlp(paragraph[0])
-            nlp_obj2 = nlp(new_paragraph[0])
-            sims  = nlp_obj.similarity(nlp_obj2)
-            
-            print(sims)
-            
-            #clear the lists to avoid over-stack
-            paragraph.clear()
-            new_paragraph.clear()
+#compare if it passes a particular threshold
 
-        
-        
-        
+threshold  = 0.3
+
+filtered_sentence  = [doc for sim, doc in  zip(similarity, corpus) if sim >= threshold]
+
+print(filtered_sentence)
