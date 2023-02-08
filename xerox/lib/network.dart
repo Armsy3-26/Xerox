@@ -11,11 +11,23 @@ class NetworkController extends GetxController {
   //widget controller dependency
 
   WidgetController widgetController = Get.put(WidgetController());
+
+  //send details to the server
+
+  Future sendDetails(
+      String username, int accountNo, String sex, String language) async {
+    var url = Uri.parse('http://127.0.0.1:5000/patient/record');
+
+    var req = await http.post(url, body: {});
+
+    print(jsonDecode(req.body));
+  }
+
   //send a file
   //take file path as an argument
   int? fileStatusFlag;
   sendFile(PlatformFile file) async {
-    var url = Uri.parse('http://127.0.0.1:5000/upload/file');
+    var url = Uri.parse('http://127.0.0.1:5000/patient/record');
 
     var request = http.MultipartRequest("POST", url);
 

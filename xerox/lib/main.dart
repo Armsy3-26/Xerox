@@ -4,7 +4,7 @@ import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xerox/file_controller.dart';
-import 'package:xerox/selection.dart';
+import 'package:xerox/sign.dart';
 import 'package:xerox/sidebar.dart';
 import 'package:xerox/widget_controller.dart';
 
@@ -60,15 +60,9 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       drawer: const NavDrawer(),
-      body: GetBuilder<WidgetController>(builder: (context) {
-        return widgetController.currentWidget ?? const SelectionWidget();
-      }),
+      body: const RegisterManager(),
       floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            fileController.getFile();
-            fileController.fileUploadStatus = false;
-            widgetController.getWidget(const SelectionWidget());
-          },
+          onPressed: () {},
           tooltip: "Select File",
           child: const Icon(Icons.file_copy)),
     );

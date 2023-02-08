@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xerox/file_controller.dart';
-import 'package:xerox/selection.dart';
 import 'package:xerox/widget_controller.dart';
 
 class ErrorWidget extends StatefulWidget {
@@ -52,7 +51,6 @@ class _ErrorWidgetState extends State<ErrorWidget> {
             GestureDetector(
               onTap: () {
                 fileController.fileUploadStatus = false;
-                widgetController.getWidget(const SelectionWidget());
               },
               child: Container(
                   height: 40,
