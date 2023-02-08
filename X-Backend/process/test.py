@@ -42,7 +42,7 @@ file  = open("/home/armsy326/Pictures/al.jpg", mode='rb')
 
 url = 'http://127.0.0.1:5000/patient/record'
 
-data1 = {"firstname": "David", "surname": "Waweru","lastname": "Kamau", "sex": "male", "language": "English", "datebirth": "19901225"}
+data1 = {"username": "Hezron Mogere", "sex": "male", "language": "English", "datebirth": "19901225"}
 
 data = {"username": "Onyango", "sex": "male","datebirth": "19900326"}
 res  = requests.post(url,json=data1)
@@ -54,6 +54,28 @@ if res.status_code == 200:
 else:
     
     print("You screwed!")
+    
+name  = "Armstrong"
+
+"""try:
+    
+    firstname,surname,lastname = name.split()
+    
+except Exception as e:
+    
+    if e.__class__.__name__ == "ValueError":
+        try:
+            firstname,surname = name.split()
+            
+        except Exception as e:
+            
+            if e.__class__.__name__ == "ValueError":
+                firstname = name.split()
+                print(firstname[0])
+            """
+        
+
+
 corpus  = []
 
 #the following fucntion gets all 

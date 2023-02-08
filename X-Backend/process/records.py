@@ -74,12 +74,87 @@ class PatientField(Resource):
         try:
             data   = request.get_json(force=True)
             
-            firstname  = data['firstname']
-            surname  = data['surname']
-            lastname  = data['lastname']
+            username  = data['username']
+            
             sex  = data['sex']
             language  = data['language']
             datebirth = data['datebirth']
+            
+            try:
+                
+                firstname,surname,lastname = username.split()
+                
+                query_user_info = f"{firstname} {surname} {lastname} {sex} {language} {datebirth}"
+                
+                user = DuplicationChecker(query_user_info)
+
+                get_patient_record()
+
+                feedback = user.check_xerox()
+
+                if feedback['flag'] == 204:
+
+                    return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
+
+                else:
+                    insert_patient  = Patient(firstname=firstname, surname=surname,lastname=lastname, sex=sex, language=language,datebirth=datebirth)
+
+                    db.session.add(insert_patient)
+
+                    db.session.commit()
+                    get_patient_record()
+                    return {"flag": 201, "feedback":"You have been successfully registered!"}
+                
+            except Exception as e:
+                
+                if e.__class__.__name__ == "ValueError":
+                    try:
+                        firstname,surname = username.split()
+                        query_user_info = f"{firstname} {surname} {sex} {language} {datebirth}"
+                        
+                        user = DuplicationChecker(query_user_info)
+
+                        get_patient_record()
+
+                        feedback = user.check_xerox()
+
+                        if feedback['flag'] == 204:
+
+                            return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
+
+                        else:
+                            insert_patient  = Patient(firstname=firstname, surname=surname, sex=sex, language=language,datebirth=datebirth)
+
+                            db.session.add(insert_patient)
+
+                            db.session.commit()
+                            get_patient_record()
+                            return {"flag": 201, "feedback":"You have been successfully registered!"}
+                        
+                    except Exception as e:
+                        
+                        if e.__class__.__name__ == "ValueError":
+                            firstname = username.split()
+                            query_user_info = f"{firstname[0]} {sex} {language} {datebirth}"
+                            
+                            user = DuplicationChecker(query_user_info)
+
+                            get_patient_record()
+
+                            feedback = user.check_xerox()
+
+                            if feedback['flag'] == 204:
+
+                                return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
+
+                            else:
+                                insert_patient  = Patient(firstname=firstname, surname=surname,lastname=lastname, sex=sex, language=language,datebirth=datebirth)
+
+                                db.session.add(insert_patient)
+
+                                db.session.commit()
+                                get_patient_record()
+                                return {"flag": 201, "feedback":"You have been successfully registered!"}
             
             query_user_info = f"{firstname} {surname} {lastname} {sex} {language} {datebirth}"
             
