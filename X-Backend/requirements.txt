@@ -1,0 +1,10 @@
+Flask==3.0.3
+flask_restful==0.3.10
+flask_sqlalchemy==3.1.1
+gensim==4.3.3
+Requests==2.32.3
+mysql-connector-python==8.0.16
+simplejson>=3.19.2
+SQLAlchemy>=2.0.31
+Werkzeug>=3.0.4
+Flask-Cors>=4.0.1 

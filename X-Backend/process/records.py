@@ -7,19 +7,21 @@ Created on Wed Feb  1 22:45:44 2023
 """
 import os
 from flask import request
-from flask_restful import Resource,marshal_with, fields
+from flask_restful import Resource,fields
 from process import db,api,app
-from model import  DuplicationChecker,get_patient_record
+from model import  DuplicationChecker,get_student_record,get_duplicates
 
 
-class Patient(db.Model):
+class Student(db.Model):
+
+    __tablename__  = 'student'
     
     id  = db.Column(db.Integer, primary_key=True, autoincrement=True)
     firstname  = db.Column(db.String(10))
     surname   = db.Column(db.String(10), )
     lastname  = db.Column(db.String(10))
-    sex    = db.Column(db.String(8))
-    language  = db.Column(db.String(12))
+    bc    = db.Column(db.String(18))
+    schoolname  = db.Column(db.String(30))
     datebirth = db.Column(db.String(16))
     #accountNo  = db.Column(db.BigInteger)
     
@@ -32,158 +34,75 @@ class Patient(db.Model):
 with app.app_context():
     
     db.create_all()
-    
-patient_information = {
-    "firstname": fields.String,
-    "surname": fields.String,
-    "lastname": fields.String,
-    "sex": fields.String,
-    "language": fields.String,
-    "datebirth": fields.String
-}
 
-class PatientField(Resource):
-    
-    @marshal_with(patient_information)
+class SchoolResource(Resource):
+
     def get(self):
+
+        schools = []
+
+        existing_schools = Student.query.with_entities(Student.schoolname).all()
+        
+        schoolnames = [school[0] for school in existing_schools]
+
+        return {"success": True, "schools": {"schools": list(set(schoolnames))}}
+
+
+
+class DuplicateResource(Resource):
+    
+    def get(self,key):
         #get data passed as query parameters
+        # automatically assume we checking for duplicates
+        # check the existence of the school
 
-        username = request.args.get('username')
-        sex  = request.args.get('sex')
-        datebirth = request.args.get('datebirth')
-        
-        user1_info = Patient.query.filter_by(firstname=username, datebirth=datebirth, sex=sex).all()
-       
-        if user1_info == []:
-            
-            user2_info = Patient.query.filter_by(surname=username, datebirth=datebirth, sex=sex).all()
+        school = Student.query.filter_by(schoolname=key).first()
 
-            if user2_info == []:
-                user3_info = Patient.query.filter_by(lastname=username, datebirth=datebirth, sex=sex).all()
+        if school:
 
-                return user3_info
+            # we begin to extract/ check for duplicates
+            # get the stedent records, need to pass in schoolname
+            total_records = get_student_record(school.schoolname)
 
-            return user2_info
-        
+            # next we check for duplicates
+            duplicates = get_duplicates()
 
-        return user1_info
+            return {
+                "total_records": total_records, 
+                "unique_records": total_records - len(duplicates), 
+                "possible_duplicates": len(duplicates), 
+                "get_duplicate": duplicates
+                }
     
     
-    def post(self):
+    def post(self,key):
         
         try:
             data   = request.get_json(force=True)
+
+            insert_student  = Student(
+                firstname=data['firstname'], 
+                surname=data['surname'],
+                lastname=data['lastname'],
+                bc=data['bc'], 
+                schoolname = data['schoolname'],
+                datebirth=data['datebirth'],
+                )
+
+            db.session.add(insert_student)
+
+            db.session.commit()
             
-            username  = data['username']
-            
-            sex  = data['sex']
-            language  = data['language']
-            datebirth = data['datebirth']
-            
-            try:
+            return {"flag": 201, "feedback":"You have been successfully registered!"}
                 
-                firstname,surname,lastname = username.split()
-                
-                query_user_info = f"{firstname} {surname} {lastname} {sex} {language} {datebirth}"
-                
-                user = DuplicationChecker(query_user_info)
-
-                get_patient_record()
-
-                feedback = user.check_xerox()
-
-                if feedback['flag'] == 204:
-
-                    return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
-
-                else:
-                    insert_patient  = Patient(firstname=firstname, surname=surname,lastname=lastname, sex=sex, language=language,datebirth=datebirth)
-
-                    db.session.add(insert_patient)
-
-                    db.session.commit()
-                    get_patient_record()
-                    return {"flag": 201, "feedback":"You have been successfully registered!"}
-                
-            except Exception as e:
-                
-                if e.__class__.__name__ == "ValueError":
-                    try:
-                        firstname,surname = username.split()
-                        query_user_info = f"{firstname} {surname} {sex} {language} {datebirth}"
-                        
-                        user = DuplicationChecker(query_user_info)
-
-                        get_patient_record()
-
-                        feedback = user.check_xerox()
-
-                        if feedback['flag'] == 204:
-
-                            return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
-
-                        else:
-                            insert_patient  = Patient(firstname=firstname, surname=surname, sex=sex, language=language,datebirth=datebirth)
-
-                            db.session.add(insert_patient)
-
-                            db.session.commit()
-                            get_patient_record()
-                            return {"flag": 201, "feedback":"You have been successfully registered!"}
-                        
-                    except Exception as e:
-                        
-                        if e.__class__.__name__ == "ValueError":
-                            firstname = username.split()
-                            query_user_info = f"{firstname[0]} {sex} {language} {datebirth}"
-                            
-                            user = DuplicationChecker(query_user_info)
-
-                            get_patient_record()
-
-                            feedback = user.check_xerox()
-
-                            if feedback['flag'] == 204:
-
-                                return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
-
-                            else:
-                                insert_patient  = Patient(firstname=firstname, surname=surname,lastname=lastname, sex=sex, language=language,datebirth=datebirth)
-
-                                db.session.add(insert_patient)
-
-                                db.session.commit()
-                                get_patient_record()
-                                return {"flag": 201, "feedback":"You have been successfully registered!"}
-            
-            query_user_info = f"{firstname} {surname} {lastname} {sex} {language} {datebirth}"
-            
-            user = DuplicationChecker(query_user_info)
-
-            get_patient_record()
-
-            feedback = user.check_xerox()
-
-            if feedback['flag'] == 204:
-
-                return {"flag": "203", "feedback":"possible duplicate", "payload": feedback['feedback']}
-
-            else:
-                insert_patient  = Patient(firstname=firstname, surname=surname,lastname=lastname, sex=sex, language=language,datebirth=datebirth)
-
-                db.session.add(insert_patient)
-
-                db.session.commit()
-                get_patient_record()
-                return {"flag": 201, "feedback":"You have been successfully registered!"}
 
         except Exception as e:
-            print(e)
+           
             return {"flag": 400, "feedback": "Error occured try after sometime!"}
     
-    def delete(self):
+    def delete(self,key):
         
-        delete_field = Patient.query.filter_by().first()
+        delete_field = Student.query.filter_by().first()
 
         db.session.delete(delete_field)
 
@@ -192,4 +111,5 @@ class PatientField(Resource):
         return "Deleted successfully!"
     
     
-api.add_resource(PatientField, '/patient/record')
+api.add_resource(DuplicateResource, '/student/record/<string:key>')
+api.add_resource(SchoolResource, '/schools')

@@ -15,21 +15,23 @@ database  = mysql.connector.connect(
     host = "localhost",
     user="root",
     password = "Armstrong3-26",
-    database = "Hackathon",
+    database = "XEROX",
 )
 mycursor  = database.cursor()
-
 #will be fetched from the database
 corpus  = []
 
-def get_patient_record():
+def get_student_record(school_name):
         corpus.clear()
-        mycursor.execute("SELECT firstname,surname,lastname,sex,datebirth FROM patient")
+        mycursor.execute("SELECT firstname,surname,lastname,bc,datebirth FROM  student WHERE schoolname = %s ",(school_name,))
         for data in mycursor:
-            print(data)
+           
             string_record = ' '.join(data)
 
             corpus.append(string_record)
+
+        return len(corpus)
+
 
 class DuplicationChecker(object):
 
@@ -38,9 +40,9 @@ class DuplicationChecker(object):
         self.query_user_info = query_user_info 
 
     def check_xerox(self):
-
+        corpus.pop(corpus.index(self.query_user_info))
         try:
-
+        
             #preprocess the information bith incoming input and corpus
 
             input_preprocess = gensim.utils.simple_preprocess(self.query_user_info)
@@ -76,18 +78,76 @@ class DuplicationChecker(object):
 
             #compare if it passes a particular threshold
 
-            threshold  = 0.3
+            threshold  = 0.5
 
-            filtered_users  = [doc for sim, doc in  zip(similarity, corpus) if sim >= threshold]
-
+            filtered_users  = [(doc,sim) for sim, doc in  zip(similarity, corpus) if sim >= threshold]
+            
             if filtered_users == []:
-
-                return {"flag": 202, "feedback": "No duplicate, registering patient..."}
+                
+                return {"success": True, "feedback": "No duplicates found"}
 
             else:
 
-                return {"flag": 204, "feedback": filtered_users}
+                # have separate records for duplicates and similarity scores
 
-        except Exception:
+                duplicate_sentences = []
 
-            return {"flag": "400", "feedback": "Could not check for duplicacy"}
+                duplicate_score = []
+                
+                for doc, sim in filtered_users:
+                    duplicate_sentences.append(doc.split(' '))
+                    duplicate_score.append(f"{sim*100:.0f}")
+
+                return {"success": True, "score": duplicate_score, "duplicates": duplicate_sentences}
+
+        except Exception as e:
+
+            return {"success": False, "feedback": "Could not check for duplicacy"}
+
+# duplicate_checker = DuplicationChecker('Kristi rome Ramos c511hf78838388 1949-01-17')
+# duplicate_checker.check_xerox()
+
+def get_duplicates():
+    duplicate_dict = {}
+
+    index = 0
+    for record in corpus:
+        # to check for duplicates 
+        # we intantiate the class
+        duplicate_checker = DuplicationChecker(record)
+    
+        # then we execute the fuction rhat does that
+        res = duplicate_checker.check_xerox()
+        
+        # we then loop through the generated corpus looking for duplicates 
+        # need to get duplicates with their indeces 
+        check_duplicate_key = res.get('duplicates')
+        if check_duplicate_key != None:
+
+            # add duplicates to the duplicate dictionary
+            # all the duplicates should be added to the dictionary
+            res['duplicates'].insert(0,record.split(' '))
+            res['score'].insert(0,0)
+            
+            duplicate_dict[f"dup{index}"] = [res['duplicates'], res['score']]
+
+            # remove all the  duplicates from the corpus
+            
+            for i in range(len(res['duplicates'])-1):
+                duplicate_index = i + 1
+                
+                duplicate_value = res['duplicates'][duplicate_index]
+
+                corpus.pop(corpus.index(' '.join(duplicate_value)))  
+
+            index = index+1
+
+        else:
+            pass
+           # corpus.pop(corpus.index(record))
+           
+        #print(f'No duplicate found for: {record}')
+    # print(duplicate_dict)
+    return duplicate_dict
+
+# get_duplicates()
