@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xerox/file_controller.dart';
 import 'package:xerox/widget_controller.dart';
 
 class ErrorWidget extends StatefulWidget {
@@ -16,7 +15,7 @@ class _ErrorWidgetState extends State<ErrorWidget> {
   WidgetController widgetController = Get.put(WidgetController());
   //file controller dependency
 
-  FileController fileController = Get.put(FileController());
+  //FileController fileController = Get.put(FileController());
 
   @override
   Widget build(BuildContext context) {
@@ -50,7 +49,7 @@ class _ErrorWidgetState extends State<ErrorWidget> {
             ),
             GestureDetector(
               onTap: () {
-                fileController.fileUploadStatus = false;
+                //fileController.fileUploadStatus = false;
               },
               child: Container(
                   height: 40,

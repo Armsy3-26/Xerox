@@ -51,9 +51,9 @@ class _AnalysisWidgetState extends State<AnalysisWidget> {
             const SizedBox(
               height: 20,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("Name similarity: "),
                 SizedBox(
                   child: Text("check gif"),
@@ -63,9 +63,9 @@ class _AnalysisWidgetState extends State<AnalysisWidget> {
             const SizedBox(
               height: 20,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("Converting files: "),
                 SizedBox(
                   child: Text("check gif"),
@@ -75,9 +75,9 @@ class _AnalysisWidgetState extends State<AnalysisWidget> {
             const SizedBox(
               height: 20,
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
+              children: [
                 Text("CHeck for copies: "),
                 SizedBox(
                   child: Text("check gif"),

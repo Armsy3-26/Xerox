@@ -1,9 +1,7 @@
-import 'dart:io';
-
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xerox/file_controller.dart';
+import 'package:xerox/home.dart';
 import 'package:xerox/sign.dart';
 import 'package:xerox/sidebar.dart';
 import 'package:xerox/widget_controller.dart';
@@ -26,7 +24,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'The Xerox Project.',
       theme: ThemeData(
@@ -50,7 +48,7 @@ class _MyHomePageState extends State<MyHomePage> {
   WidgetController widgetController = Get.put(WidgetController());
   //file controller dependency
 
-  FileController fileController = Get.put(FileController());
+  //FileController fileController = Get.put(FileController());
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +58,7 @@ class _MyHomePageState extends State<MyHomePage> {
         centerTitle: true,
       ),
       drawer: const NavDrawer(),
-      body: const RegisterManager(),
+      body: const Home(),
       floatingActionButton: FloatingActionButton(
           onPressed: () {},
           tooltip: "Select File",

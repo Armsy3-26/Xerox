@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:xerox/network.dart';
+import 'package:xerox/duplicateresult.dart';
 
 class RegisterManager extends StatefulWidget {
   const RegisterManager({Key? key}) : super(key: key);
@@ -10,11 +11,8 @@ class RegisterManager extends StatefulWidget {
 }
 
 class _MyWidgetState extends State<RegisterManager> {
-  final TextEditingController _userName = TextEditingController();
-  final TextEditingController _accountNo = TextEditingController();
-  final TextEditingController _sex = TextEditingController();
-  final TextEditingController _language = TextEditingController();
-  //final TextEditingController _bio = TextEditingController();
+  final TextEditingController _employeeNo = TextEditingController();
+  final TextEditingController _password = TextEditingController();
   //final TextEditingController _confirmPassword = TextEditingController();
 
   //dependency injection for the api
@@ -25,11 +23,20 @@ class _MyWidgetState extends State<RegisterManager> {
   final _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    networkController.getLearningInstitutions();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey,
         body: Column(
           children: [
+            const SizedBox(
+              height: 100,
+            ),
             Expanded(
               child: Center(
                 child: ListView(children: [
@@ -54,25 +61,25 @@ class _MyWidgetState extends State<RegisterManager> {
                             ),
                           ],
                         ),
-                        const SizedBox(height: 20),
+                        const SizedBox(height: 12),
                         SizedBox(
                           height: 60,
                           width: 400,
                           child: Center(
                             child: TextFormField(
-                                controller: _userName,
+                                controller: _employeeNo,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0)),
-                                    hintText: "Enter username",
+                                    hintText: "Enter MOE Number",
                                     filled: true,
                                     hintStyle:
                                         const TextStyle(color: Colors.grey),
                                     fillColor: Colors.white),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please enter username";
+                                    return "Please enter MOE number";
                                   }
                                   return null;
                                 }),
@@ -84,67 +91,19 @@ class _MyWidgetState extends State<RegisterManager> {
                           width: 400,
                           child: Center(
                             child: TextFormField(
-                                controller: _accountNo,
+                                controller: _password,
                                 decoration: InputDecoration(
                                     border: OutlineInputBorder(
                                         borderRadius:
                                             BorderRadius.circular(10.0)),
-                                    hintText: "Enter account Number",
+                                    hintText: "Enter password",
                                     filled: true,
                                     hintStyle:
                                         const TextStyle(color: Colors.grey),
                                     fillColor: Colors.white),
                                 validator: (value) {
                                   if (value == null || value.isEmpty) {
-                                    return "Please enter account number";
-                                  }
-                                  return null;
-                                }),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 60,
-                          width: 400,
-                          child: Center(
-                            child: TextFormField(
-                                controller: _sex,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    hintText: "Enter gender",
-                                    filled: true,
-                                    hintStyle:
-                                        const TextStyle(color: Colors.grey),
-                                    fillColor: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please enter gender";
-                                  }
-                                  return null;
-                                }),
-                          ),
-                        ),
-                        const SizedBox(height: 12),
-                        SizedBox(
-                          height: 60,
-                          width: 400,
-                          child: Center(
-                            child: TextFormField(
-                                controller: _language,
-                                decoration: InputDecoration(
-                                    border: OutlineInputBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    hintText: "Enter language",
-                                    filled: true,
-                                    hintStyle:
-                                        const TextStyle(color: Colors.grey),
-                                    fillColor: Colors.white),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return "Please enter language";
+                                    return "Please enter password";
                                   }
                                   return null;
                                 }),
@@ -159,23 +118,21 @@ class _MyWidgetState extends State<RegisterManager> {
                           child: TextButton(
                             style: ButtonStyle(
                                 backgroundColor:
-                                    MaterialStateProperty.all(Colors.blue[600]),
+                                    WidgetStateProperty.all(Colors.blue[600]),
                                 foregroundColor:
-                                    MaterialStateProperty.all(Colors.white),
-                                padding: MaterialStateProperty.all(
+                                    WidgetStateProperty.all(Colors.white),
+                                padding: WidgetStateProperty.all(
                                     const EdgeInsets.all(16.0))),
                             onPressed: () {
                               if (_formKey.currentState!.validate()) {
-                                networkController.sendDetails(
-                                  _userName.text,
-                                  int.parse(_accountNo.text),
-                                  _sex.text,
-                                  _language.text,
-                                );
+                                // networkController.sendDetails(
+                                //   _employeeNo.text,
+                                //   _password.text,
+                                // );
                               }
                             },
                             child: const Text(
-                              " Register patient ",
+                              " Get in ",
                               style: TextStyle(color: Colors.black38),
                             ),
                           ),

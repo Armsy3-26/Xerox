@@ -37,7 +37,7 @@ class _NavDrawerState extends State<NavDrawer> {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: const Text("Xerox(Hackathon Project)"),
+                      title: const Text("Xerox(Off Project)"),
                       content: about(),
                       actions: [
                         GestureDetector(
@@ -74,13 +74,13 @@ class _NavDrawerState extends State<NavDrawer> {
 
 about() {
   return Container(
+    width: 200,
     decoration: const BoxDecoration(
       shape: BoxShape.circle,
     ),
-    width: 40,
-    height: 60,
     child: const Text(
-      "This is  program that facilitates checking of duplicates.\nA project for Kabarak Hackathon!",
+      //"Xerox Project is a mobile application that uses TensorFlow-IDF to check for duplicate documents.\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\
+      "This is a program that facilitates checking of duplicates. Uses TF-IDF, a statistical measure in which we can evaluate the importance of a word in a document against a relative document(courpus). Basically this technique will help rank data, that is almost the same(duplicates)\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tAn off project!",
       style: TextStyle(fontSize: 13),
     ),
   );
