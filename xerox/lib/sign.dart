@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:xerox/network.dart';
-import 'package:xerox/duplicateresult.dart';
+import 'package:xerox/Api/api.dart';
 
 class RegisterManager extends StatefulWidget {
   const RegisterManager({Key? key}) : super(key: key);

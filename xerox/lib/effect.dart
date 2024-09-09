@@ -5,6 +5,7 @@ class CustomShimmerContainer extends StatefulWidget {
   const CustomShimmerContainer({super.key});
 
   @override
+  // ignore: library_private_types_in_public_api
   _CustomShimmerContainerState createState() => _CustomShimmerContainerState();
 }
 

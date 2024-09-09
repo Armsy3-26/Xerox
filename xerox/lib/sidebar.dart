@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:xerox/engine2/home.dart';
+import 'package:xerox/homepage.dart';
 
 class NavDrawer extends StatefulWidget {
   const NavDrawer({super.key});
@@ -27,8 +29,17 @@ class _NavDrawerState extends State<NavDrawer> {
           ListTile(
             onTap: () {
               Navigator.of(context).pop();
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const MyHomePage()));
             },
             leading: const Text("Home"),
+          ),
+          ListTile(
+            onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => const Engine2Home()));
+            },
+            leading: const Text("Xerox Egine V2"),
           ),
           ListTile(
             onTap: () {

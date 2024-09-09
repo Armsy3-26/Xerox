@@ -4,8 +4,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'package:xerox/widget_controller.dart';
 
 class NetworkController extends GetxController {
+  WidgetController widgetController = Get.put(WidgetController());
   //create an error widget
 
   errorWidget(String title, String feedback) => Get.snackbar(
@@ -24,13 +26,13 @@ class NetworkController extends GetxController {
 
   //send details to the server
 
-  Future sendDetails(String employeeNo, String password) async {
-    var url = Uri.parse('http://127.0.0.1:5000/login');
+  // Future sendDetails(String employeeNo, String password) async {
+  //   var url = Uri.parse('http://127.0.0.1:5000/login');
 
-    var req = await http.post(url, body: {});
+  //   var req = await http.post(url, body: {});
 
-    print(jsonDecode(req.body));
-  }
+  //   print(jsonDecode(req.body));
+  // }
 
   //the following gets the learning institutions
 
@@ -53,7 +55,7 @@ class NetworkController extends GetxController {
     } catch (e) {
       errorWidget("Server Feedback", "Could not get the schools, server down!");
     }
-    print(learningInstitutions);
+    //print(learningInstitutions);
 
     update();
   }
@@ -67,10 +69,9 @@ class NetworkController extends GetxController {
     var res = await http.get(url);
 
     var results = jsonDecode(res.body);
-    print(results);
 
     searchResults = results;
-    print(searchResults);
+    widgetController.isSearching = false;
 
     update();
   }

@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:xerox/Api/api.dart';
 import 'package:xerox/duplicateresult.dart';
-import 'package:xerox/network.dart';
 
 class InstitutionSearch extends SearchDelegate {
   static String? result = " ";
