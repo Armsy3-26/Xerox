@@ -1,9 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep  7 12:32:33 2024
+Created on Thu Sep  8 21:33:39 2024
 
 @author: armsy326
+"""
+"""
+The alpha model loops through all students registered and try to craft all relationships from the encountered duplications
 """
 
 import os
@@ -19,21 +22,42 @@ database  = mysql.connector.connect(
 )
 mycursor  = database.cursor()
 #will be fetched from the database
+school_corpus_determiner = []
 corpus  = []
 
-def get_student_record(school_name):
+#schools will be put here
+
+schools = []
+
+def get_student_records():
         corpus.clear()
-        mycursor.execute("SELECT firstname,surname,lastname,bc,datebirth FROM  student WHERE schoolname = %s ",(school_name,))
+        school_corpus_determiner.clear()
+        mycursor.execute("SELECT firstname,surname,lastname,bc,datebirth FROM  student")
         for data in mycursor:
            
             string_record = ' '.join(data)
 
             corpus.append(string_record)
+            school_corpus_determiner.append(string_record)
 
         return len(corpus)
 
+def get_schools():
+    
 
-class DuplicationChecker(object):
+    schools.clear()
+
+    mycursor.execute("SELECT schoolname FROM student")
+
+    for school in mycursor:
+
+        schools.append(school[0])
+    
+get_student_records()
+
+get_schools()
+
+class AlphaDuplicationChecker(object):
 
     def __init__(self, query_user_info):
 
@@ -78,7 +102,7 @@ class DuplicationChecker(object):
 
             #compare if it passes a particular threshold
 
-            threshold  = 0.5
+            threshold  = 0.4
 
             filtered_users  = [(doc,sim) for sim, doc in  zip(similarity, corpus) if sim >= threshold]
             
@@ -93,12 +117,17 @@ class DuplicationChecker(object):
                 duplicate_sentences = []
 
                 duplicate_score = []
+
+                duplicate_school = []
                 
                 for doc, sim in filtered_users:
                     duplicate_sentences.append(doc.split(' '))
                     duplicate_score.append(f"{sim*100:.0f}")
-
-                return {"success": True, "score": duplicate_score, "duplicates": duplicate_sentences}
+                    
+                    duplicate_school.append(schools[school_corpus_determiner.index(doc)])
+                # print(duplicate_score)
+                # print(duplicate_school)
+                return {"success": True, "score": duplicate_score, "duplicates": duplicate_sentences, "school_duplicate": duplicate_school}
 
         except Exception as e:
 
@@ -107,14 +136,14 @@ class DuplicationChecker(object):
 # duplicate_checker = DuplicationChecker('Kristi rome Ramos c511hf78838388 1949-01-17')
 # duplicate_checker.check_xerox()
 
-def get_duplicates():
+def get_alpha_duplicates():
     duplicate_dict = {}
 
     index = 0
     for record in corpus:
         # to check for duplicates 
         # we intantiate the class
-        duplicate_checker = DuplicationChecker(record)
+        duplicate_checker = AlphaDuplicationChecker(record)
     
         # then we execute the fuction rhat does that
         res = duplicate_checker.check_xerox()
@@ -122,14 +151,17 @@ def get_duplicates():
         # we then loop through the generated corpus looking for duplicates 
         # need to get duplicates with their indeces 
         check_duplicate_key = res.get('duplicates')
-        if check_duplicate_key != None:
-
+       
+        if check_duplicate_key is not None:
+            print(res)
+           
             # add duplicates to the duplicate dictionary
             # all the duplicates should be added to the dictionary
             res['duplicates'].insert(0,record.split(' '))
             res['score'].insert(0,0)
+            res['school_duplicate'].insert(0,schools[school_corpus_determiner.index(record)])
             
-            duplicate_dict[f"dup{index}"] = [res['duplicates'], res['score']]
+            duplicate_dict[f"dup{index}"] = [res['duplicates'], res['score'], res["school_duplicate"]]
 
             # remove all the  duplicates from the corpus
             
@@ -149,5 +181,3 @@ def get_duplicates():
         #print(f'No duplicate found for: {record}')
     # print(duplicate_dict)
     return duplicate_dict
-
-# get_duplicates()

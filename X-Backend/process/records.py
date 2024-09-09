@@ -10,6 +10,7 @@ from flask import request
 from flask_restful import Resource,fields
 from process import db,api,app
 from model import  DuplicationChecker,get_student_record,get_duplicates
+from alpha_model import AlphaDuplicationChecker, get_schools,get_student_records,get_alpha_duplicates
 
 
 class Student(db.Model):
@@ -110,6 +111,32 @@ class DuplicateResource(Resource):
 
         return "Deleted successfully!"
     
+class AlphaDuplicateResource(Resource):
+
+    def get(self):
+
+       
+        # automatically assume we checking for duplicates
+        
+
+        # we begin to extract/ check for duplicates
+        #get all schools, essential for mapping
+        get_schools()
+        # get the student records
+        total_records = get_student_records()
+
+        # next we check for duplicates
+        duplicates = get_alpha_duplicates()
+
+        return {
+            "total_records": total_records, 
+            "unique_records": total_records - len(duplicates), 
+            "possible_duplicates": len(duplicates), 
+            "get_duplicate": duplicates
+            }
+
+    
     
 api.add_resource(DuplicateResource, '/student/record/<string:key>')
 api.add_resource(SchoolResource, '/schools')
+api.add_resource(AlphaDuplicateResource, '/engine2/alpha')

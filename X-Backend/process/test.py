@@ -87,28 +87,63 @@ database = mysql.connector.connect(
 
 mycursor = database.cursor()
 
-# schools = ['Elisa Academy', 
-#            'St. Don Bosco Primary School', 
-#            'Mt.Sinai Academy', 'Asumbi Girls Primary School', 
-#            'St. Andrew Kaaga Boys', 
-#            'Tabaka Girls Primary School']
+schools = ['Elisa Academy', 
+           'St. Don Bosco Primary School', 
+           'Mt.Sinai Academy', 'Asumbi Girls Primary School', 
+           'St. Andrew Kaaga Boys', 
+           'Tabaka Girls Primary School']
 
-# fake = Faker()
+repeat = ['Mt.Sinai Academy', 'Asumbi Girls Primary School',]
 
-# i = 21
 
-# while i < 40:
+fake = Faker()
 
+i = 0
+
+while i < 6:
+    first_name = fake.first_name()
+    last_name = fake.user_name()
+    user_name = fake.last_name()
+    bc = secrets.token_hex(5)
+    schools = random.choice(repeat)
+
+    print(fake.first_name())
+    mycursor.execute("select MAX(id) FROM student")
+    primary_key = mycursor.fetchall()[0][0]
+    if i % 2 == 0:
+        # repeat the same execution
+        mycursor.execute(
+         "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
+         (primary_key+1, fake.user_name(), fake.last_name(),fake.first_name(), secrets.token_hex(4), random.choice(repeat), str(fake.date_of_birth())))
+        
+        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+    else:
+        mycursor.execute(
+         "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
+         (primary_key+2,first_name, user_name, last_name, bc, schools, str(fake.date_of_birth())))
+        
+        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
     
-#     mycursor.execute(
-#          "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
-#          (i,fake.first_name(), fake.user_name(), fake.last_name(), secrets.token_hex(i-19), random.choice(schools), str(fake.date_of_birth())))
+    mycursor.execute(
+         "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
+         (primary_key+3,fake.first_name(), fake.user_name(), fake.last_name(), secrets.token_hex(6), schools, str(fake.date_of_birth())))
+    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
     
-#     database.commit()
+    mycursor.execute(
+         "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
+         (primary_key+4, last_name, first_name, user_name, secrets.token_hex(6), schools, str(fake.date_of_birth())))
+    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+    
+    
+    database.commit()
  
-#     time.sleep(1)
-#     print(f"Added student {fake.first_name()} to database ........{mycursor.rowcount+i} added.")
-#     i = i+1
+    time.sleep(1)
+    for r in range(5):
+        print('*'*r)
+    
+    i = i+1
+
+
 
 # corpus = []
 
