@@ -60,9 +60,27 @@ class _DuplicateSearchState extends State<Engine2DuplicateSearchScreen> {
                           ],
                         ),
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            // Title with a nice background color
+                            Text(
+                              "Showing duplicate results for: ${engine2NetworkController.searchResults['results_for']}",
+                              style: const TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                              "Your duplication search took ${engine2NetworkController.searchResults['search_duration']} milliseconds",
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontStyle: FontStyle.italic,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
@@ -127,7 +145,7 @@ class _DuplicateSearchState extends State<Engine2DuplicateSearchScreen> {
                                     entry.value[1]; // Similarity scores list
 
                                 final schools =
-                                    entry.value[2]; //lol schools liste here
+                                    entry.value[2]; //lol schools list here
 
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

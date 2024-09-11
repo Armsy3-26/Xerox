@@ -78,8 +78,7 @@ class DuplicationChecker(object):
 
             #compare if it passes a particular threshold
 
-            threshold  = 0.5
-
+            threshold  = 0.6
             filtered_users  = [(doc,sim) for sim, doc in  zip(similarity, corpus) if sim >= threshold]
             
             if filtered_users == []:

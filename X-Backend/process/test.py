@@ -100,14 +100,13 @@ fake = Faker()
 
 i = 0
 
-while i < 6:
+while i < 200:
     first_name = fake.first_name()
     last_name = fake.user_name()
     user_name = fake.last_name()
     bc = secrets.token_hex(5)
     schools = random.choice(repeat)
 
-    print(fake.first_name())
     mycursor.execute("select MAX(id) FROM student")
     primary_key = mycursor.fetchall()[0][0]
     if i % 2 == 0:
@@ -116,30 +115,28 @@ while i < 6:
          "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
          (primary_key+1, fake.user_name(), fake.last_name(),fake.first_name(), secrets.token_hex(4), random.choice(repeat), str(fake.date_of_birth())))
         
-        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.\n\n".center(90))
     else:
         mycursor.execute(
          "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
          (primary_key+2,first_name, user_name, last_name, bc, schools, str(fake.date_of_birth())))
         
-        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+        print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.\n\n".center(90))
     
     mycursor.execute(
          "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
          (primary_key+3,fake.first_name(), fake.user_name(), fake.last_name(), secrets.token_hex(6), schools, str(fake.date_of_birth())))
-    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.\n\n".center(90))
     
     mycursor.execute(
          "Insert into student (id,firstname,surname,lastname,bc,schoolname,datebirth) values(%s,%s,%s,%s,%s,%s,%s)",
          (primary_key+4, last_name, first_name, user_name, secrets.token_hex(6), schools, str(fake.date_of_birth())))
-    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.")
+    print(f"Added student {fake.first_name()} to database ........{primary_key+i} added.\n\n".center(90))
     
     
     database.commit()
  
     time.sleep(1)
-    for r in range(5):
-        print('*'*r)
     
     i = i+1
 

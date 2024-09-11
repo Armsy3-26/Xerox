@@ -24,10 +24,7 @@ class _Engine2SearchScreenState extends State<Engine2SearchScreen> {
       engine2widgetController.engine2IsSearching = true;
     });
 
-    // Simulate a delay to show the searching indicator
-    Future.delayed(const Duration(seconds: 3), () {
-      engine2NetworkController.searchDuplicates();
-    });
+    engine2NetworkController.searchDuplicates();
   }
 
   @override

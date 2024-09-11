@@ -102,7 +102,7 @@ class AlphaDuplicationChecker(object):
 
             #compare if it passes a particular threshold
 
-            threshold  = 0.4
+            threshold  = 0.7
 
             filtered_users  = [(doc,sim) for sim, doc in  zip(similarity, corpus) if sim >= threshold]
             
@@ -153,7 +153,6 @@ def get_alpha_duplicates():
         check_duplicate_key = res.get('duplicates')
        
         if check_duplicate_key is not None:
-            print(res)
            
             # add duplicates to the duplicate dictionary
             # all the duplicates should be added to the dictionary

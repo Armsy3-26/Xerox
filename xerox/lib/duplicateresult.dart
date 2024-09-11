@@ -26,7 +26,7 @@ class _DuplicateSearchState extends State<DuplicateSearchScreen> {
     });
 
     // Simulate a delay to show the searching indicator
-    Future.delayed(const Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 1), () {
       networkController.searchDuplicates(option!);
     });
   }
@@ -77,9 +77,26 @@ class _DuplicateSearchState extends State<DuplicateSearchScreen> {
                               ],
                             ),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                // Title with a nice background color
+                                Text(
+                                  "Showing duplicate results for: ${networkController.searchResults['results_for']}",
+                                  style: const TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
+                                  "Your duplication search took ${networkController.searchResults['search_duration']} seconds",
+                                  style: TextStyle(
+                                    fontSize: 14.0,
+                                    fontStyle: FontStyle.italic,
+                                    color: Colors.grey[600],
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
                                 Row(
                                   mainAxisAlignment:
                                       MainAxisAlignment.spaceEvenly,
